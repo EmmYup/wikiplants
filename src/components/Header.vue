@@ -2,7 +2,7 @@
   <b-container fluid>
     <b-row>
       <b-col>
-        <h1>WikiPlants</h1>
+        <h1>PokeWiki</h1>
       </b-col>
     </b-row>
   </b-container>

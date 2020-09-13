@@ -1,14 +1,29 @@
 <template>
   <div id="app">
     <Header />
-    <FilterBar />
+    <b-container fluid>
+      <b-row>
+        <b-col>
+          <b-form-input
+            v-model="text"
+            placeholder="Enter the name of a pokemon"
+          ></b-form-input>
+        </b-col>
+        <b-col>
+          <b-dropdown id="dropdown-1" variant="primary" text="Filter family">
+            <b-dropdown-item>Family 1</b-dropdown-item>
+            <b-dropdown-item>Family 2</b-dropdown-item>
+            <b-dropdown-item>Family 3</b-dropdown-item>
+          </b-dropdown>
+        </b-col>
+      </b-row>
+    </b-container>
     <List :pokemons="this.pokemons" />
   </div>
 </template>
 
 <script>
 import Header from './components/Header';
-import FilterBar from './components/FilterBar';
 import List from './components/List';
 import axios from 'axios';
 
@@ -19,11 +34,12 @@ axios.defaults.baseURL = API_URL;
 
 export default {
   name: 'App',
-  components: { Header, FilterBar, List },
+  components: { Header, List },
   computed: {},
   data() {
     return {
       pokemons: [],
+      text: '',
     };
   },
   async mounted() {

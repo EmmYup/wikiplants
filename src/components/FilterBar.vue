@@ -6,7 +6,6 @@
           v-model="text"
           placeholder="Enter the name of a plant"
         ></b-form-input>
-        <!-- <div class="mt-2">Value: {{ text }}</div> -->
       </b-col>
       <b-col>
         <b-dropdown id="dropdown-1" variant="primary" text="Filter family">

@@ -6,19 +6,26 @@
         <b-col>
           <b-form-input
             v-model="text"
+            :change="findByName(this.text)"
             placeholder="Enter the name of a pokemon"
           ></b-form-input>
         </b-col>
         <b-col>
-          <b-dropdown id="dropdown-1" variant="primary" text="Filter family">
-            <b-dropdown-item>Family 1</b-dropdown-item>
-            <b-dropdown-item>Family 2</b-dropdown-item>
-            <b-dropdown-item>Family 3</b-dropdown-item>
+          <b-dropdown id="dropdown-1" variant="primary" text="Types">
+            <b-dropdown-item
+              v-on:click="filterPokemons(type.url)"
+              v-for="(type, index) in this.types"
+              :key="index"
+              >{{ type.name }}</b-dropdown-item
+            >
           </b-dropdown>
         </b-col>
       </b-row>
     </b-container>
-    <List :pokemons="this.pokemons" />
+    <div v-if="this.isLoading" class="text-center" id="spinner">
+      <b-spinner variant="primary" type="grow" label="Spinning"></b-spinner>
+    </div>
+    <List :pokemons="this.pokemons" v-if="!this.isLoading" />
   </div>
 </template>
 
@@ -39,11 +46,13 @@ export default {
   data() {
     return {
       pokemons: [],
+      types: [],
       text: '',
+      isLoading: false,
     };
   },
   async mounted() {
-    axios.get(`/pokemon?limit=151`).then((response) => {
+    axios.get(`/pokemon?limit=20`).then((response) => {
       response.data.results.forEach((element) => {
         axios.get(element.url).then((response) => {
           this.pokemons.push({
@@ -55,6 +64,32 @@ export default {
         });
       });
     });
+
+    axios.get(`/type`).then((response) => {
+      this.types = response.data.results;
+    });
+  },
+  methods: {
+    filterPokemons: function(url) {
+      this.isLoading = true;
+      axios.get(url).then((response) => {
+        this.pokemons = [];
+        response.data.pokemon.forEach((response) => {
+          axios.get(response.pokemon.url).then((response) => {
+            this.pokemons.push({
+              id: response.data.id,
+              name: response.data.name,
+              types: response.data.types,
+              imageUrl: `${IMAGE_API_URL}/${response.data.id}.png`,
+            });
+          });
+        });
+      });
+      this.isLoading = false;
+    },
+    findByName(name) {
+      console.log(name);
+    },
   },
 };
 </script>
@@ -69,6 +104,7 @@ export default {
   /* margin-top: 60px; */
   /* width: 100%; */
 }
-h1 {
+#spinner {
+  margin-top: 40px;
 }
 </style>

@@ -88,7 +88,14 @@ export default {
       this.isLoading = false;
     },
     findByName(name) {
-      console.log(name);
+      axios.get(`/pokemon/${name}`).then((response) => {
+        this.pokemons.push({
+          id: response.data.id,
+          name: response.data.name,
+          types: response.data.types,
+          imageUrl: `${IMAGE_API_URL}/${response.data.id}.png`,
+        });
+      });
     },
   },
 };
